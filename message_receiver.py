@@ -3,7 +3,7 @@ import ressources.calc as calc
 from ressources.controller import Controller
 from pigpio import pi
 
-rasp_pi_ip = '192.168.50.60'
+rasp_pi_ip = '192.168.178.29'
 rasp_pi = pi(rasp_pi_ip)
 
 # Motor 1 Pins
@@ -19,11 +19,12 @@ controller1 = Controller(motor1_pins)
 # controller1.go_to_goal(end_pos)
 
 # Motor 2 Pins
-# in1 = 12  # IN1
-# in2 = 16  # IN2
-# in3 = 20  # IN3
-# in4 = 21  # IN4
-# motor2_pins = [in1, in2, in3, in4]
+in2_1 = 18  # IN1
+in2_2 = 17  # IN2
+in2_3 = 27  # IN3
+in2_4 = 22  # IN4
+motor2_pins = [in2_1, in2_2, in2_3, in2_4]
+controller2 = Controller(motor2_pins)
 
 # 49°29'11.8"N 6°02'04.8"E
 our_lat = 49.486617
@@ -40,7 +41,7 @@ while True:
     msg = msg_data.decode('utf-8')
     split_msg = msg.split(',')
     # print('tracking flight: ' + msg)
-    if split_msg[14] != '' and split_msg[15] != '' and len(split_msg) < 23:
+    if len(split_msg) > 15 and split_msg[11] != '' and split_msg[14] != '' and split_msg[15] != '' and len(split_msg) < 23:
         plane_alt = int(split_msg[11])
         plane_lat = float(split_msg[14])
         plane_lon = float(split_msg[15])
@@ -48,17 +49,18 @@ while True:
         print('alt: ' + split_msg[11])
         print('lat: ' + split_msg[14])
         print('lon: ' + split_msg[15])
-        #
-        # angle = 360 - calc.calc_angle(our_lat, our_lon, plane_lat, plane_lon)
-        # end_pos = controller1.get_end_pos(angle)
-        # controller1.go_to_goal(end_pos)
+
+        angle = 360 - calc.calc_angle(our_lat, our_lon, plane_lat, plane_lon)
+        end_pos = controller1.get_end_pos(angle)
+        controller1.go_to_goal(end_pos)
+
         our_alt = 0
         plane_alt = calc.feet_to_meter(plane_alt)
         angle = calc.calc_vertical_angle(our_lat, our_lon, our_alt, plane_lat, plane_lon, plane_alt)
         print('Altitude:' + str(plane_alt))
         print('Angle: ' + str(angle))
-        end_pos = controller1.get_end_pos(angle)
-        controller1.go_to_goal(end_pos)
+        end_pos = controller2.get_end_pos(angle)
+        controller2.go_to_goal(end_pos)
 
 
 # # 49°29'11.8"N 6°02'04.8"E
