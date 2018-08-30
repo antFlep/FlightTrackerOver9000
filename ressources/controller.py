@@ -4,8 +4,7 @@ from pigpio import pi
 
 class Controller:
 
-    def __init__(self, pins):
-        rasp_pi_ip = '192.168.178.29'
+    def __init__(self, pins, rasp_pi_ip):
         rasp_pi = pi(rasp_pi_ip)
 
         self.motor = StepperMotor(rasp_pi, *pins)
