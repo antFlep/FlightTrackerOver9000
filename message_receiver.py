@@ -6,7 +6,7 @@ import time
 import ressources.calc as calc
 from ressources.controller import Controller
 
-rasp_pi_ip = '192.168.50.60'
+rasp_pi_ip = '192.168.55.15'
 
 # Motor 1 Pins
 in1 = 12  # IN1
@@ -28,9 +28,11 @@ in2_4 = 22  # IN4
 motor2_pins = [in2_1, in2_2, in2_3, in2_4]
 controller2 = Controller(motor2_pins, rasp_pi_ip)
 
+# Set our position Here
 # 49°29'11.8"N 6°02'04.8"E
 our_lat = 49.486617
 our_lon = 6.034665
+our_alt = 0
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ip = socket.gethostbyname(rasp_pi_ip)
@@ -40,7 +42,7 @@ client.connect(address)
 
 
 def collect_msgs():
-    print("Started collecting messages")
+    print("started collecting messages")
     start = time.time()
     planes_pos = {}
     while time.time() - start < 30:
@@ -53,10 +55,10 @@ def collect_msgs():
             plane_alt = int(split_msg[11])
             plane_lat = float(split_msg[14])
             plane_lon = float(split_msg[15])
-            print("Found plane with hex: " + plane_hex)
+            print("found plane with hex: " + plane_hex)
             inner_dic = {'Altitude': plane_alt, 'Latitude': plane_lat, 'Longitude': plane_lon}
             planes_pos[plane_hex] = inner_dic
-    print(planes_pos)
+    print('\n' + str(planes_pos) + '\n')
     return planes_pos
 
 
@@ -67,10 +69,9 @@ while True:
     closest_plane_lat = -1
     closest_plane_lon = -1
     closest_plane_alt = -1
-    plane_distance = -1
+    closest_plane_dis = -1
 
     for plane_key in planes_pos.keys():
-        print(plane_key)
         plane = planes_pos.get(plane_key)
         plane_hex = plane_key
         plane_alt = plane['Altitude']
@@ -78,30 +79,51 @@ while True:
         plane_lon = plane['Longitude']
         plane_dis = calc.calc_distance(our_lat, our_lon, plane_lat, plane_lon)
 
-        print('flight-hex: ' + plane_hex)
-        print('alt: ' + str(plane_alt))
-        print('lat: ' + str(plane_lat))
-        print('lon: ' + str(plane_lon))
-        print('dis: ' + str(plane_dis))
+        print('hex: ' + plane_hex +
+              '; alt: ' + str(plane_alt) +
+              '; lat: ' + str(plane_lat) +
+              '; lon: ' + str(plane_lon) +
+              '; dis: ' + str(plane_dis))
 
-        if plane_dis < plane_distance or plane_distance < 0:
+        if plane_dis < closest_plane_dis or closest_plane_dis < 0:
             closest_plane_hex = plane_hex
             closest_plane_alt = plane_alt
             closest_plane_lat = plane_lat
             closest_plane_lon = plane_lon
-            plane_distance = plane_dis
+            closest_plane_dis = plane_dis
 
-    if not plane_distance == -1:
-        angle = 360 - calc.calc_angle(our_lat, our_lon, closest_plane_lat, closest_plane_lon)
-        end_pos = controller1.get_end_pos(angle)
+    if not closest_plane_dis == -1:
+        print('\nclosest plane: ' + closest_plane_hex)
+
+        # Set horizontal position
+        print('\nsetting horizontal angle:')
+        # TODO why do we need to subtract form 360
+
+        hor_angle = 360 - calc.calc_angle(
+            our_lat,
+            our_lon,
+            closest_plane_lat,
+            closest_plane_lon)
+
+        end_pos = controller1.get_end_pos(hor_angle)
         controller1.go_to_goal(end_pos)
 
-        our_alt = 0
-        plane_alt = calc.feet_to_meter(plane_alt)
-        angle = calc.calc_vertical_angle(our_lat, our_lon, our_alt, plane_lat, plane_lon, plane_alt)
-        print('Altitude: ' + str(plane_alt))
-        print('Angle   : ' + str(angle))
-        end_pos = controller2.get_end_pos(angle)
+        # Set vertical position
+        print('\nsetting vertical angle:')
+        closest_plane_alt = calc.feet_to_meter(closest_plane_alt)
+
+        # TODO explain formulas
+
+        ver_angle = calc.calc_vertical_angle(
+            our_lat,
+            our_lon,
+            our_alt,
+            closest_plane_lat,
+            closest_plane_lon,
+            closest_plane_alt)
+
+        print('altitude: ' + str(closest_plane_alt) + '; angle: ' + str(ver_angle))
+        end_pos = controller2.get_end_pos(ver_angle)
         controller2.go_to_goal(end_pos)
 
 

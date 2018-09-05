@@ -47,16 +47,10 @@ def feet_to_meter(x):
 
 
 if __name__ == '__main__':
-    # 49°29'11.8"N 6°02'04.8"E
+
     our_lat = 49.486617
     our_lon = 6.034665
-    #
-    # # 49°28'59.0"N 6°05'22.0"E
-    # # 49.483049, 6.089437
-    # plane_lat = 49.483049
-    # plane_lon = 6.089437
-    #
-    # 46°11'46.7"N 6°07'21.1"E
+
     plane_lat = 46.196295
     plane_lon = 6.122516
     distance = calc_distance(our_lat, our_lon, plane_lat, plane_lon)

@@ -4,7 +4,7 @@ import sys
 import ressources.calc as calc
 from ressources.controller import Controller
 
-rasp_pi_ip = '192.168.50.60'
+rasp_pi_ip = '192.168.55.15'
 
 # Motor 1 Pins
 in1 = 12  # IN1

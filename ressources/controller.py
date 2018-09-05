@@ -15,6 +15,7 @@ class Controller:
         return int((self.full_circle/360) * angle)
 
     def go_to_goal(self, end_pos):
+        print('current position: ' + str(self.current_pos))
         if end_pos == self.current_pos:
             return
         if end_pos < self.current_pos:
@@ -27,5 +28,5 @@ class Controller:
             self.motor.do_rotate_clockwise(diff)
             self.current_pos += diff
             print('running clockwise')
-        print('Current Position: ' + str(self.current_pos) + '; End Position: ' + str(end_pos))
+        print('current position: ' + str(self.current_pos) + '; end position: ' + str(end_pos))
         assert end_pos == self.current_pos
