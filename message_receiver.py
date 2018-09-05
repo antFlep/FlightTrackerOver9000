@@ -42,7 +42,7 @@ client.connect(address)
 
 
 def collect_msgs():
-    print("started collecting messages")
+    print("\nstarted collecting messages")
     start = time.time()
     planes_pos = {}
     while time.time() - start < 30:
@@ -99,7 +99,7 @@ while True:
         print('\nsetting horizontal angle:')
         # TODO why do we need to subtract form 360
 
-        hor_angle = 360 - calc.calc_angle(
+        hor_angle = calc.calc_angle(
             our_lat,
             our_lon,
             closest_plane_lat,

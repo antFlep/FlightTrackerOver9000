@@ -20,7 +20,6 @@ def calc_angle(our_lat, our_lon, plane_lat, plane_lon):
     angle = math.atan2(y, x)
     angle = math.degrees(angle)
     angle = (angle + 360) % 360
-    angle = 360 - angle
 
     return angle
 
