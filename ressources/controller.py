@@ -16,17 +16,21 @@ class Controller:
 
     def go_to_goal(self, end_pos):
         print('current position: ' + str(self.current_pos))
+
         if end_pos == self.current_pos:
             return
+
         if end_pos < self.current_pos:
+            print('running counterclockwise')
             diff = self.current_pos - end_pos
             self.motor.do_rotate_counterclockwise(diff)
             self.current_pos -= diff
-            print('running counterclockwise')
+
         else:
+            print('running clockwise')
             diff = end_pos - self.current_pos
             self.motor.do_rotate_clockwise(diff)
             self.current_pos += diff
-            print('running clockwise')
+
         print('current position: ' + str(self.current_pos) + '; end position: ' + str(end_pos))
         assert end_pos == self.current_pos

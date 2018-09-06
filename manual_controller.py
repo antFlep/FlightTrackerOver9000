@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf_8 -*-
+
 import sys
-import ressources.calc as calc
 from ressources.controller import Controller
 
 rasp_pi_ip = '192.168.55.15'

@@ -6,9 +6,9 @@ import time
 import ressources.calc as calc
 from ressources.controller import Controller
 
-rasp_pi_ip = '192.168.55.15'
+rasp_pi_ip = '192.168.55.20'
 
-# Motor 1 Pins
+# Motor 1 pins
 in1 = 12  # IN1
 in2 = 16  # IN2
 in3 = 20  # IN3
@@ -16,11 +16,7 @@ in4 = 21  # IN4
 motor1_pins = [in1, in2, in3, in4]
 controller1 = Controller(motor1_pins, rasp_pi_ip)
 
-# Test: move motor by 90 degrees
-# end_pos = controller1.get_end_pos(90)
-# controller1.go_to_goal(end_pos)
-
-# Motor 2 Pins
+# Motor 2 pins
 in2_1 = 18  # IN1
 in2_2 = 17  # IN2
 in2_3 = 27  # IN3
@@ -44,26 +40,36 @@ client.connect(address)
 def collect_msgs():
     print("\nstarted collecting messages")
     start = time.time()
-    planes_pos = {}
+    planes = {}
+
     while time.time() - start < 30:
         msg_data = client.recv(1024)
         msg = msg_data.decode('utf-8')
         split_msg = msg.split(',')
-        if len(split_msg) > 15 and split_msg[11] != '' and split_msg[14] != '' and split_msg[15] != '' and len(
-            split_msg) < 23:
+
+        if len(split_msg) > 15 and \
+                split_msg[11] != '' and \
+                split_msg[14] != '' and \
+                split_msg[15] != '' and \
+                len(split_msg) < 23:
+
             plane_hex = split_msg[4]
             plane_alt = int(split_msg[11])
             plane_lat = float(split_msg[14])
             plane_lon = float(split_msg[15])
+
             print("found plane with hex: " + plane_hex)
-            inner_dic = {'Altitude': plane_alt, 'Latitude': plane_lat, 'Longitude': plane_lon}
-            planes_pos[plane_hex] = inner_dic
-    print('\n' + str(planes_pos) + '\n')
-    return planes_pos
+            inner_dic = {'Altitude': plane_alt,
+                         'Latitude': plane_lat,
+                         'Longitude': plane_lon}
+            planes[plane_hex] = inner_dic
+
+    print('\n' + str(planes))
+    return planes
 
 
 while True:
-    planes_pos = collect_msgs()
+    planes = collect_msgs()
 
     closest_plane_hex = None
     closest_plane_lat = -1
@@ -71,8 +77,8 @@ while True:
     closest_plane_alt = -1
     closest_plane_dis = -1
 
-    for plane_key in planes_pos.keys():
-        plane = planes_pos.get(plane_key)
+    for plane_key in planes.keys():
+        plane = planes.get(plane_key)
         plane_hex = plane_key
         plane_alt = plane['Altitude']
         plane_lat = plane['Latitude']
@@ -99,7 +105,7 @@ while True:
         print('\nsetting horizontal angle:')
         # TODO why do we need to subtract form 360
 
-        hor_angle = calc.calc_angle(
+        hor_angle = calc.calc_horizontal_angle(
             our_lat,
             our_lon,
             closest_plane_lat,
@@ -113,7 +119,6 @@ while True:
         closest_plane_alt = calc.feet_to_meter(closest_plane_alt)
 
         # TODO explain formulas
-
         ver_angle = calc.calc_vertical_angle(
             our_lat,
             our_lon,
@@ -125,7 +130,6 @@ while True:
         print('altitude: ' + str(closest_plane_alt) + '; angle: ' + str(ver_angle))
         end_pos = controller2.get_end_pos(ver_angle)
         controller2.go_to_goal(end_pos)
-
 
 # # 49°29'11.8"N 6°02'04.8"E
 # our_lat = 49.486617
@@ -142,6 +146,3 @@ while True:
 #
 # print(str(ressources.calc.calc_angle(our_lat, our_lon, plane_lat, plane_lon)))
 # print(str(ressources.calc.calc_angle(plane_lat, plane_lon, our_lat, our_lon)))
-
-
-
