@@ -25,7 +25,7 @@ class Controller:
             diff = self.current_pos - end_pos
             self.motor.do_rotate_counterclockwise(diff)
             self.current_pos -= diff
-
+            
         else:
             print('running clockwise')
             diff = end_pos - self.current_pos
