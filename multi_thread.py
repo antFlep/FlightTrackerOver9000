@@ -7,7 +7,7 @@ import ressources.calc as calc
 from ressources.controller import Controller
 from threading import Lock, Thread
 
-rasp_pi_ip = '192.168.178.29'
+rasp_pi_ip = '192.168.55.20'
 
 # Motor 1 pins
 in1 = 12  # IN1
@@ -73,7 +73,7 @@ class PlaneCollector(Thread):
                              'Time': plane_tim,
                              'Distance': plane_dis}
                 self.planes[plane_hex] = inner_dic
-                print(self.closest_plane.hex)
+
                 if plane_dis < self.closest_plane.dis or self.closest_plane.dis == 0:
                     threadLock.acquire()
                     self.closest_plane.hex = plane_hex
@@ -171,7 +171,6 @@ class MotorThread(Thread):
 
             # Set horizontal position
             print('\nsetting horizontal angle:')
-            # TODO why do we need to subtract form 360
 
             hor_angle = calc.calc_horizontal_angle(
                 our_lat,
@@ -199,6 +198,7 @@ class MotorThread(Thread):
             end_pos = controller2.get_end_pos(ver_angle)
             controller2.go_to_goal(end_pos)
             time.sleep(0.1)
+
 
 closest_plane = Plane()
 plane_collector = PlaneCollector(closest_plane)

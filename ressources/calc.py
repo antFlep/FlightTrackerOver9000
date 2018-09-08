@@ -35,9 +35,9 @@ def calc_distance(our_lat, our_lon, plane_lat, plane_lon):
     d_lat = plane_lat * math.pi / 180 - our_lat * math.pi / 180
     d_lon = plane_lon * math.pi / 180 - our_lon * math.pi / 180
 
-    a = math.sin(d_lat / 2) * math.sin(d_lat / 2) + \
-        math.cos(our_lat * math.pi / 180) * \
-        math.cos(plane_lat * math.pi / 180) * \
+    a = math.sin(d_lat / 2) * math.sin(d_lat / 2) +     \
+        math.cos(our_lat * math.pi / 180) *             \
+        math.cos(plane_lat * math.pi / 180) *           \
         math.sin(d_lon / 2) * math.sin(d_lon / 2)
 
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
@@ -60,7 +60,5 @@ if __name__ == '__main__':
 
     distance = calc_distance(our_lat, our_lon, plane_lat, plane_lon)
 
-    print(str(distance))
-    print(str(360 - calc_horizontal_angle(our_lat, our_lon, plane_lat, plane_lon)))
 
 
