@@ -1,6 +1,8 @@
-import pigpio
-from time import sleep
+# -*- coding: utf_8 -*-
+
 from collections import deque
+from time import sleep
+from pigpio import pi, OUTPUT
 
 fullStepSequence = (
     (1, 0, 0, 0),
@@ -21,23 +23,25 @@ halfStepSequence = (
 )
 
 
-class StepperMotor:
+class StepperMotor(object):
 
-    def __init__(self, pi, pin1, pin2, pin3, pin4, sequence=halfStepSequence, delay_after_step=0.001):
-        if not isinstance(pi, pigpio.pi):
+    def __init__(self, ip, pin1, pin2, pin3, pin4, sequence=halfStepSequence, delay_after_step=0.001):
+        rasp_pi = pi(ip)
+
+        if not isinstance(rasp_pi, pi):
             raise TypeError("Is not pigpio.pi instance.")
 
-        pi.set_mode(pin1, pigpio.OUTPUT)
-        pi.set_mode(pin2, pigpio.OUTPUT)
-        pi.set_mode(pin3, pigpio.OUTPUT)
-        pi.set_mode(pin4, pigpio.OUTPUT)
+        rasp_pi.set_mode(pin1, OUTPUT)
+        rasp_pi.set_mode(pin2, OUTPUT)
+        rasp_pi.set_mode(pin3, OUTPUT)
+        rasp_pi.set_mode(pin4, OUTPUT)
 
         self.pin1 = pin1
         self.pin2 = pin2
         self.pin3 = pin3
         self.pin4 = pin4
 
-        self.pi = pi
+        self.pi = rasp_pi
         self.delayAfterStep = delay_after_step
         self.deque = deque(sequence)
 

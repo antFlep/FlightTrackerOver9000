@@ -1,3 +1,6 @@
+# -*- coding: utf_8 -*-
+
+
 class Plane(object):
 
     def __init__(self):
@@ -12,5 +15,4 @@ class Plane(object):
     def plane_info(self, new_info=None):
         if new_info:
             self.information = new_info
-        print('Hello')
         return self.information

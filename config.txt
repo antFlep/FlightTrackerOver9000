@@ -1,0 +1,24 @@
+# our position
+our_lat=49.486617
+our_lon=6.034665
+our_alt=0
+
+# motor 1 pins
+m1_in1=21
+m1_in2=20
+m1_in3=16
+m1_in4=12
+
+# motor 2 pins
+m2_in1=26
+m2_in2=19
+m2_in3=13
+m2_in4=6
+
+# distance sensor pins
+sens_trig=2
+sens_echo=3
+
+# raspberry pi ip and message port
+ip=192.168.55.15
+msg_port=1337

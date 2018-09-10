@@ -1,38 +1,40 @@
 #!/usr/bin/python
 # -*- coding: utf_8 -*-
 
+
+from ressources.parser import get_parameter
+from ressources.controller import Controller
+import ressources.calc as calc
 import socket
 import time
-import ressources.calc as calc
-from ressources.controller import Controller
 
-rasp_pi_ip = '192.168.55.20'
+rasp_ip = get_parameter('ip')
 
 # Motor 1 pins
-in1 = 12  # IN1
-in2 = 16  # IN2
-in3 = 20  # IN3
-in4 = 21  # IN4
-motor1_pins = [in1, in2, in3, in4]
-controller1 = Controller(motor1_pins, rasp_pi_ip)
+m1_in1 = int(get_parameter('m1_in1'))  # IN1
+m1_in2 = int(get_parameter('m1_in2'))  # IN2
+m1_in3 = int(get_parameter('m1_in3'))  # IN3
+m1_in4 = int(get_parameter('m1_in4'))  # IN4
+motor1_pins = [m1_in1, m1_in2, m1_in3, m1_in4]
+controller1 = Controller(motor1_pins, rasp_ip)
 
 # Motor 2 pins
-in2_1 = 18  # IN1
-in2_2 = 17  # IN2
-in2_3 = 27  # IN3
-in2_4 = 22  # IN4
-motor2_pins = [in2_1, in2_2, in2_3, in2_4]
-controller2 = Controller(motor2_pins, rasp_pi_ip)
+m2_in1 = int(get_parameter('m2_in1'))  # IN1
+m2_in2 = int(get_parameter('m2_in2'))  # IN2
+m2_in3 = int(get_parameter('m2_in3'))  # IN3
+m2_in4 = int(get_parameter('m2_in4'))   # IN4
+motor2_pins = [m2_in1, m2_in2, m2_in3, m2_in4]
+controller2 = Controller(motor2_pins, rasp_ip)
 
 # Set our position Here
 # 49°29'11.8"N 6°02'04.8"E
-our_lat = 49.486617
-our_lon = 6.034665
-our_alt = 0
+our_lat = float(get_parameter('our_lat'))
+our_lon = float(get_parameter('our_lon'))
+our_alt = int(get_parameter('our_alt'))
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ip = socket.gethostbyname(rasp_pi_ip)
-port = 1337
+ip = socket.gethostbyname(rasp_ip)
+port = int(get_parameter('msg_port'))
 address = (ip, port)
 client.connect(address)
 

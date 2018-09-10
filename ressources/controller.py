@@ -1,13 +1,12 @@
+# -*- coding: utf_8 -*-
+
 from ressources.stepper import StepperMotor
-from pigpio import pi
 
 
-class Controller:
+class Controller(object):
 
     def __init__(self, pins, rasp_pi_ip):
-        rasp_pi = pi(rasp_pi_ip)
-
-        self.motor = StepperMotor(rasp_pi, *pins)
+        self.motor = StepperMotor(rasp_pi_ip, *pins)
         self.full_circle = 4096  # 8 half-steps times 512
         self.current_pos = 0
 

@@ -1,12 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf_8 -*-
+
 from multiprocessing.managers import BaseManager
-
 from multi_process.plane_collector import PlaneCollector
-from multi_process.motor_manager import MotorManager
+from multi_process.plane_tracker import MotorManager
 from multi_process.plane import Plane
-
 from ressources.controller import Controller
+from ressources.parser import get_parameter
 
 
 class PlaneManager(BaseManager):
@@ -15,44 +15,42 @@ class PlaneManager(BaseManager):
 
 if __name__ == '__main__':
 
-    rasp_ip = '192.168.55.20'
+    rasp_ip = get_parameter('ip')
+    msg_port = int(get_parameter('msg_port'))
 
     our_position = {
-        'Latitude': 49.486617,
-        'Longitude': 6.034665,
-        'Altitude': 0}
+        'Latitude': float(get_parameter('our_lat')),
+        'Longitude': float(get_parameter('our_lon')),
+        'Altitude': int(get_parameter('our_alt'))}
 
     # Motor 1 pins
-    in1 = 12  # IN1
-    in2 = 16  # IN2
-    in3 = 20  # IN3
-    in4 = 21  # IN4
-    motor1_pins = [in1, in2, in3, in4]
+    m1_in1 = int(get_parameter('m1_in1'))  # IN1
+    m1_in2 = int(get_parameter('m1_in2'))  # IN2
+    m1_in3 = int(get_parameter('m1_in3'))  # IN3
+    m1_in4 = int(get_parameter('m1_in4'))  # IN4
+    motor1_pins = [m1_in1, m1_in2, m1_in3, m1_in4]
     controller1 = Controller(motor1_pins, rasp_ip)
 
     # Motor 2 pins
-    in2_1 = 18  # IN1
-    in2_2 = 17  # IN2
-    in2_3 = 27  # IN3
-    in2_4 = 22  # IN4
-    motor2_pins = [in2_1, in2_2, in2_3, in2_4]
+    m2_in1 = int(get_parameter('m2_in1'))  # IN1
+    m2_in2 = int(get_parameter('m2_in2'))  # IN2
+    m2_in3 = int(get_parameter('m2_in3'))  # IN3
+    m2_in4 = int(get_parameter('m2_in4'))   # IN4
+    motor2_pins = [m2_in1, m2_in2, m2_in3, m2_in4]
     controller2 = Controller(motor2_pins, rasp_ip)
 
     PlaneManager.register('Plane', Plane)
-
     plane_manager = PlaneManager()
     plane_manager.start()
-
-    # freeze_support()
     closest_plane = plane_manager.Plane()
 
-    # plane_collector = PlaneCollector(closest_plane, rasp_ip, our_position)
+    plane_collector = PlaneCollector(closest_plane, our_position, rasp_ip, msg_port)
     motor_manager = MotorManager(closest_plane, our_position, controller1, controller2)
 
-    # plane_collector.start()
+    plane_collector.start()
     motor_manager.start()
 
     # If this thread ends our PlaneManager will be lost, the use of join prevents this
-    # plane_collector.join()
+    plane_collector.join()
     motor_manager.join()
 

@@ -1,19 +1,19 @@
-import socket
-import time
+# -*- coding: utf_8 -*-
 
 from multiprocessing import Process
 from ressources import calc
+import socket
+import time
 
 
 class PlaneCollector(Process):
 
-    def __init__(self, closest_plane, ip, current_position):
+    def __init__(self, closest_plane, current_position, ip, port, tracking_time=10):
         Process.__init__(self)
-
-        self.ip = ip
 
         self.closest_plane = closest_plane
         self.planes = {}
+        self.tracking_time = tracking_time
 
         # Our current position
         self.our_lat = current_position['Latitude']
@@ -21,11 +21,9 @@ class PlaneCollector(Process):
         self.our_alt = current_position['Altitude']
 
         # Network connection
+        address = (ip, port)
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.ip = socket.gethostbyname(ip)
-        self.port = 1337
-        self.address = (self.ip, self.port)
-        self.client.connect(self.address)
+        self.client.connect(address)
 
     def run(self):
         while True:
@@ -75,9 +73,11 @@ class PlaneCollector(Process):
                     self.closest_plane.plane_info(plane_info)
                     continue
 
+                print("time to change the plane?")
+
                 # If the last message we got from the currently tracked plane is to old,
                 # switch to the next closest one in the list
-                if time.time() - closest_plane_time > 10:
+                if time.time() - closest_plane_time > self.tracking_time:
                     self.select_and_clean()
 
     def select_and_clean(self):
@@ -96,7 +96,7 @@ class PlaneCollector(Process):
 
             # If the last message we got from the plane is to old,
             # put the hex in a list, so that we can delete the entry afterwards
-            if plane_tim - self.closest_plane.plane_info()['Time'] > 10:
+            if plane_tim - self.closest_plane.plane_info()['Time'] > self.tracking_time:
                 to_delete.append(plane_hex)
                 continue
 
