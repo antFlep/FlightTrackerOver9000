@@ -129,5 +129,5 @@ class PlaneCollector(Process):
             self.closest_plane.plane_info(closest_plane_info)
 
         # Remove old entries
-        for hex in to_delete:
-            del self.planes[hex]
+        for plane in to_delete:
+            del self.planes[plane]

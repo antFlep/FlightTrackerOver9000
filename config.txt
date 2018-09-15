@@ -1,4 +1,5 @@
-# our position
+# Set our position Here
+# 49°29'11.8"N 6°02'04.8"E
 our_lat=49.486617
 our_lon=6.034665
 our_alt=0
@@ -20,5 +21,6 @@ sens_trig=2
 sens_echo=3
 
 # raspberry pi ip and message port
-ip=192.168.55.15
+# ip=192.168.55.15
+ip=192.168.0.101
 msg_port=1337
