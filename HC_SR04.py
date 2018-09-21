@@ -9,6 +9,7 @@ GPIO_ECHO = 3
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
 GPIO.setup(GPIO_ECHO, GPIO.IN)
 
+
 def distance():
     # set Trigger High
     GPIO.output(GPIO_TRIGGER, True)
