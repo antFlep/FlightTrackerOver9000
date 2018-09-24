@@ -40,10 +40,10 @@ class DistanceSensor(object):
             end_time = time.time()
 
         # elapsed time
-        TimeElapsed = end_time - start_time
+        time_elapsed = end_time - start_time
         # multiply with speed of sound (34300 cm/s)
         # and division by two
-        distance = (TimeElapsed * 34300) / 2
+        distance = (time_elapsed * 34300) / 2
 
         return distance
 
