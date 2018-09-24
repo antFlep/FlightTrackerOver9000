@@ -30,6 +30,7 @@ class PlaneCollector(Process):
             # Distance of the currently tracked plane
             closest_plane = self.closest_plane.plane_info()
             print(closest_plane)
+
             closest_plane_distance = closest_plane['Distance']
             closest_plane_time = closest_plane['Time']
 
@@ -38,7 +39,6 @@ class PlaneCollector(Process):
             split_msg = msg.split(',')
 
             # Only accept messages that have all information we need
-            # TODO: change so that we do not need all information
             if len(split_msg) > 15 and \
                     split_msg[11] != '' and \
                     split_msg[14] != '' and \

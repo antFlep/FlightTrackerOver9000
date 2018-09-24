@@ -29,20 +29,24 @@ def calc_vertical_angle(our_lat, our_lon, our_alt, plane_lat, plane_lon, plane_a
 
 
 def calc_distance(our_lat, our_lon, plane_lat, plane_lon):
-    earth_radius = 6378.137  # Radius of earth in KM
+    earth_radius = 6378137  # Earth radius in m
 
-    d_lat = plane_lat * math.pi / 180 - our_lat * math.pi / 180
-    d_lon = plane_lon * math.pi / 180 - our_lon * math.pi / 180
+    our_lat = math.radians(our_lat)
+    our_lon = math.radians(our_lon)
+    plane_lat = math.radians(plane_lat)
+    plane_lon = math.radians(plane_lon)
+
+    d_lat = plane_lat - our_lat
+    d_lon = plane_lon - our_lon
 
     a = math.sin(d_lat / 2) * math.sin(d_lat / 2) +     \
-        math.cos(our_lat * math.pi / 180) *             \
-        math.cos(plane_lat * math.pi / 180) *           \
+        math.cos(our_lat) * math.cos(plane_lat) *       \
         math.sin(d_lon / 2) * math.sin(d_lon / 2)
 
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    d = earth_radius * c
+    distance = earth_radius * c
 
-    return d * 1000  # meters
+    return distance
 
 
 def feet_to_meter(x):
@@ -51,13 +55,26 @@ def feet_to_meter(x):
 
 if __name__ == '__main__':
 
-    our_lat = 49.486617
-    our_lon = 6.034665
+    our_test_lat = 49.486617
+    our_test_lon = 6.034665
 
-    plane_lat = 46.196295
-    plane_lon = 6.122516
+    plane_test_lat = 46.196295
+    plane_test_lon = 6.122516
 
-    distance = calc_distance(our_lat, our_lon, plane_lat, plane_lon)
+    test_distance = calc_distance(our_test_lat,
+                                  our_test_lon,
+                                  plane_test_lat,
+                                  plane_test_lon)
+
+    vertical_angle = calc_vertical_angle(our_test_lat,
+                                         our_test_lon,
+                                         0,
+                                         plane_test_lat,
+                                         plane_test_lon,
+                                         1000)
+
+    print(test_distance)
+    print(vertical_angle)
 
 
 
