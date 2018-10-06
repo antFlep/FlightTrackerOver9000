@@ -4,6 +4,18 @@ import math
 
 
 def calc_horizontal_angle(our_lat, our_lon, plane_lat, plane_lon):
+    """
+    Calculates horizontal between 2 positions.
+    In our case between our position and that of a plane
+
+    :param our_lat: point1/our latitude in degrees
+    :param our_lon: point1/our longitude in degrees
+    :param plane_lat: point2/plane latitude in degrees
+    :param plane_lon: point2/plane longitude in degrees
+    :return: horizontal angle between our position and that of a plane
+    """
+
+    # convert deg to rad
     our_lat = math.radians(our_lat)
     our_lon = math.radians(our_lon)
     plane_lat = math.radians(plane_lat)
@@ -23,12 +35,36 @@ def calc_horizontal_angle(our_lat, our_lon, plane_lat, plane_lon):
 
 
 def calc_vertical_angle(our_lat, our_lon, our_alt, plane_lat, plane_lon, plane_alt):
+    """
+    Calculates vertical angle between two positions
+    using simple trigonometry.
+    In our case between our position and that of a plane.
+
+    :param our_lat: point1/our latitude in degrees
+    :param our_lon: point1/our longitude in degrees
+    :param our_alt: point1/our altitude in meter
+    :param plane_lat: point2/plane latitude in degrees
+    :param plane_lon: point2/plane longitude in degrees
+    :param plane_alt: point2/plane longitude in meter
+    :return: vertical angle between our position and that of a plane
+    """
+
     d_alt = plane_alt - our_alt
     distance = calc_distance(our_lat, our_lon, plane_lat, plane_lon)
     return math.degrees(math.atan(d_alt/distance))
 
 
 def calc_distance(our_lat, our_lon, plane_lat, plane_lon):
+    """
+    Calculates great circle distance between 2 points on earth
+
+    :param our_lat: point1 latitude
+    :param our_lon: point1 longitude
+    :param plane_lat: point2 latitude
+    :param plane_lon: point2 longitude
+    :return: great circle distance between point1 and 2
+    """
+
     earth_radius = 6378137  # Earth radius in m
 
     our_lat = math.radians(our_lat)
@@ -50,31 +86,14 @@ def calc_distance(our_lat, our_lon, plane_lat, plane_lon):
 
 
 def feet_to_meter(x):
+    """
+    Converts feet to meters
+
+    :param x: value in feet
+    :return: value in meter
+    """
+
     return x * 0.3048
-
-
-if __name__ == '__main__':
-
-    our_test_lat = 49.486617
-    our_test_lon = 6.034665
-
-    plane_test_lat = 46.196295
-    plane_test_lon = 6.122516
-
-    test_distance = calc_distance(our_test_lat,
-                                  our_test_lon,
-                                  plane_test_lat,
-                                  plane_test_lon)
-
-    vertical_angle = calc_vertical_angle(our_test_lat,
-                                         our_test_lon,
-                                         0,
-                                         plane_test_lat,
-                                         plane_test_lon,
-                                         1000)
-
-    print(test_distance)
-    print(vertical_angle)
 
 
 
